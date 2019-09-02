@@ -2,47 +2,92 @@
   <div id="app">
     <div id="login" v-if="!auth"></div>
     <div v-if="auth" class="gallery">
-      <img v-for="item in faces" :key="item.id" :src="item.url" />
+      <preview :data="item" v-for="item in faces" :key="item.id"> </preview>
     </div>
   </div>
 </template>
 
 <script>
-import { app, db, firebase } from "./firebase.js"
+import Vue from "vue"
+import { db, firebase } from "./firebase.js"
 import * as firebaseui from "firebaseui"
+
+import { VueTyper } from "vue-typer"
+import Preview from "@/components/Preview"
 
 export default {
   name: "app",
-  components: {},
+  components: { VueTyper, Preview },
   data() {
     return {
+      limit: 20,
       auth: false,
       faces: []
+    }
+  },
+  methods: {
+    getData() {
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max))
+      }
+
+      db.collection("faces")
+        .orderBy("date", "desc")
+        .limit(this.limit + 1)
+        .get()
+        .then(querySnapshot => {
+          let tmp = []
+          querySnapshot.forEach(doc => {
+            tmp = [...tmp, { id: doc.id, data: doc.data(), meta: doc.metadata }]
+          })
+
+          tmp.shift()
+          this.faces = tmp
+        })
+
+      db.collection("faces")
+        .orderBy("date", "desc")
+        .limit(1)
+        .onSnapshot(querySnapshot => {
+          // console.log("get DATA")
+          let tmp = []
+          querySnapshot.forEach(doc => {
+            tmp.push({ id: doc.id, data: doc.data(), meta: doc.metadata })
+          })
+          let pos = Math.floor(Math.random() * Math.floor(20))
+          // console.log("put DATA in POS " + pos)
+          // console.log(tmp[0])
+
+          Vue.set(this.faces, pos, tmp[0])
+
+          // this.faces[pos] = tmp[0]
+        })
     }
   },
   created() {
     const uiConfig = {
       signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
       callbacks: {
-        signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+        signInSuccessWithAuthResult: () => {
           this.auth = true
-
-          db.collection("faces").onSnapshot(querySnapshot => {
-            let tmp = []
-            querySnapshot.forEach(doc => {
-              tmp.push(doc.data())
-            })
-            this.faces = tmp
-          })
-
+          this.getData()
           return false
         }
       }
     }
 
-    const login = new firebaseui.auth.AuthUI(firebase.auth())
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log("ADMIN LOGGED IN")
+        this.auth = true
+        this.getData()
+      } else {
+        console.log("LOG IN")
 
-    login.start("#login", uiConfig)
+        const login = new firebaseui.auth.AuthUI(firebase.auth())
+        login.start("#login", uiConfig)
+      }
+    })
   },
   mounted() {}
 }
@@ -57,6 +102,10 @@ html {
   padding: 0;
 }
 
+* {
+  font-family: Courier;
+}
+
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -65,17 +114,37 @@ html {
   color: #2c3e50;
   height: 100vh;
   width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
+
+$color: blue;
+
+.vue-typer {
+  font-family: monospace;
+}
+
+.vue-typer .custom.char {
+  color: #d4d4bd;
+  background-color: #1e1e1e;
+}
+.vue-typer .custom.char.selected {
+  background-color: #264f78;
+}
+
+.vue-typer .custom.caret {
+  width: 10px;
+  background-color: #3f51b5;
 }
 
 .gallery {
   height: 100%;
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, 3fr);
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  border: 2px solid $color;
+  box-sizing: border-box;
 }
 </style>
