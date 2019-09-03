@@ -12,12 +12,11 @@ import Vue from "vue"
 import { db, firebase } from "./firebase.js"
 import * as firebaseui from "firebaseui"
 
-import { VueTyper } from "vue-typer"
 import Preview from "@/components/Preview"
 
 export default {
   name: "app",
-  components: { VueTyper, Preview },
+  components: { Preview },
   data() {
     return {
       limit: 20,
@@ -27,10 +26,6 @@ export default {
   },
   methods: {
     getData() {
-      function getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max))
-      }
-
       db.collection("faces")
         .orderBy("date", "desc")
         .limit(this.limit + 1)
