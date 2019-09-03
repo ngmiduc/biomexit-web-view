@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <button type="button" name="button" @click="tick"></button>
     <div id="login" v-if="!auth"></div>
     <div v-if="auth" class="gallery">
       <preview
@@ -19,6 +20,7 @@ import { db, firebase } from "./firebase.js"
 import * as firebaseui from "firebaseui"
 
 import Preview from "@/components/Preview"
+import axios from "axios"
 
 export default {
   name: "app",
@@ -32,6 +34,12 @@ export default {
     }
   },
   methods: {
+    tick() {
+      axios.post("http://192.168.1.52:3000", {
+        image:
+          "https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2FtOGjxf5MQBe6KKaQYtoR.jpg?alt=media&token=f0a57335-abea-4a69-9374-9a644d264300"
+      })
+    },
     getData() {
       db.collection("faces")
         .orderBy("date", "desc")
