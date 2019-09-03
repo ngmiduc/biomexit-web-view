@@ -2,7 +2,13 @@
   <div id="app">
     <div id="login" v-if="!auth"></div>
     <div v-if="auth" class="gallery">
-      <preview :data="item" v-for="item in faces" :key="item.id"> </preview>
+      <preview
+        :data="item"
+        v-for="(item, index) in faces"
+        :key="item.id"
+        :newItem="index === pos ? true : false"
+      >
+      </preview>
     </div>
   </div>
 </template>
@@ -21,7 +27,8 @@ export default {
     return {
       limit: 20,
       auth: false,
-      faces: []
+      faces: [],
+      pos: null
     }
   },
   methods: {
@@ -52,7 +59,7 @@ export default {
           let pos = Math.floor(Math.random() * Math.floor(20))
           // console.log("put DATA in POS " + pos)
           // console.log(tmp[0])
-
+          this.pos = pos
           Vue.set(this.faces, pos, tmp[0])
 
           // this.faces[pos] = tmp[0]

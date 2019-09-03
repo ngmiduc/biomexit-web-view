@@ -1,8 +1,22 @@
 <template>
-  <div class="item">
-    <img :src="url" />
+  <div class="item" :class="{ new: newItem }">
+    <img
+      :src="url"
+      :class="{
+        noFilter1: random > 0.5,
+        noFilter2: random > 0.75,
+        noFilter3: random > 0.85,
+        hide: random > 0.95
+      }"
+    />
 
     <div class="analysis">
+      <countTo
+        v-if="random > 0.95"
+        :startVal="0"
+        :endVal="Math.floor(Math.random() * 99999999)"
+        :duration="3000"
+      ></countTo>
       <vue-typer
         :text="texts"
         :repeat="Infinity"
@@ -15,6 +29,7 @@
         erase-style="select-all"
         :erase-on-complete="false"
         caret-animation="blink"
+        @typed="random = Math.random()"
       ></vue-typer>
     </div>
 
@@ -24,19 +39,25 @@
 
 <script>
 import { VueTyper } from "vue-typer"
+import countTo from "vue-count-to"
 
 export default {
   name: "preview",
-  components: { VueTyper },
+  components: { VueTyper, countTo },
   props: {
-    data: Object
+    data: Object,
+    newItem: Boolean
   },
   data() {
     return {
       states: ["single", "married", "hi", "divorced", "liquid", "selleba"],
       url: "",
       analysis: "",
-      id: ""
+      id: "",
+      random: Math.random(),
+
+      startVal: 0,
+      endVal: Math.floor(Math.random() * 99999999)
     }
   },
   computed: {
@@ -45,13 +66,7 @@ export default {
     // ><br />
     // <span> STATE : {{ state[Math.floor(Math.random(1) * 6)] }}</span>
     texts() {
-      let base = [
-        "Arya Stark",
-        "Jon Snow",
-        "Daenerys Targaryen",
-        "Melisandre",
-        "Tyrion Lannister"
-      ]
+      let base = []
 
       base = [...base, `ID:${this.id}`]
       base = [...base, `ANALYSIS:${this.analysis}`]
@@ -77,6 +92,7 @@ export default {
       this.url = tmp.data.url
       this.id = tmp.id
       this.analysis = tmp.data.analysis
+      this.random = Math.random()
     }
   }
 }
@@ -88,6 +104,8 @@ $color: blue;
 .vue-typer {
   z-index: 99999;
   font-family: monospace;
+  background-color: blue;
+  padding: 5px;
 }
 
 .vue-typer .custom.char {
@@ -110,19 +128,36 @@ $color: blue;
   height: calc(100% / 5);
   position: relative;
   border: 2px solid $color;
+
+  background-color: blue;
   box-sizing: border-box;
 
+  &.new {
+    border: 2px solid red;
+    background-color: red;
+
+    img {
+      opacity: 0.5 !important;
+    }
+  }
+
   .analysis {
+    text-align: center;
     position: absolute;
     top: 90%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 0%;
+    transform: translate(0%, -50%);
+    width: 100%;
     z-index: 1000;
     padding: 5px;
     font-size: 0.8rem;
-    background-color: blue;
     color: white;
     font-weight: bold;
+
+    span {
+      color: #d4d4bd;
+      background-color: blue;
+    }
   }
 
   .extra {
@@ -143,7 +178,6 @@ $color: blue;
   }
 
   img {
-    -webkit-filter: grayscale(33%); /* Safari 6.0 - 9.0 */
     filter: grayscale(33%);
     position: absolute;
     top: 0;
@@ -152,6 +186,20 @@ $color: blue;
     height: 100%;
     object-fit: cover;
     object-position: center;
+
+    &.noFilter1 {
+      filter: grayscale(60%);
+    }
+    &.noFilter2 {
+      filter: grayscale(80%);
+    }
+    &.noFilter3 {
+      filter: grayscale(90%);
+    }
+
+    &.hide {
+      opacity: 0.4;
+    }
   }
 }
 </style>
