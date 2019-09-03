@@ -2,35 +2,23 @@
   <div class="item">
     <img :src="url" />
 
-    <!-- <vue-typer
-          :text="[
-            'Arya Stark',
-            'Jon Snow',
-            'Daenerys Targaryen',
-            'Melisandre',
-            'Tyrion Lannister'
-          ]"
-          :repeat="Infinity"
-          :shuffle="true"
-          initial-action="typing"
-          :pre-type-delay="70"
-          :type-delay="70"
-          :pre-erase-delay="2000"
-          :erase-delay="250"
-          erase-style="select-all"
-          :erase-on-complete="false"
-          caret-animation="blink"
-        ></vue-typer> -->
-
     <div class="analysis">
-      {{ analysis }}
+      <vue-typer
+        :text="texts"
+        :repeat="Infinity"
+        :shuffle="true"
+        initial-action="typing"
+        :pre-type-delay="70"
+        :type-delay="70"
+        :pre-erase-delay="2000"
+        :erase-delay="250"
+        erase-style="select-all"
+        :erase-on-complete="false"
+        caret-animation="blink"
+      ></vue-typer>
     </div>
 
-    <div class="extra">
-      <span> ID : {{ id }} </span>
-      <span> AGE : {{ Math.floor(Math.random(1) * 30 + 20) }}</span>
-      <span> STATE : {{ state[Math.floor(Math.random(1) * 6)] }}</span>
-    </div>
+    <div class="extra"></div>
   </div>
 </template>
 
@@ -45,10 +33,36 @@ export default {
   },
   data() {
     return {
-      state: ["single", "married", "hi", "divorced", "liquid", "selleba"],
+      states: ["single", "married", "hi", "divorced", "liquid", "selleba"],
       url: "",
       analysis: "",
       id: ""
+    }
+  },
+  computed: {
+    // <span> ID : {{ id }} </span><br />
+    // <span> AGE : {{ Math.floor(Math.random(1) * 30 + 20) }}</span
+    // ><br />
+    // <span> STATE : {{ state[Math.floor(Math.random(1) * 6)] }}</span>
+    texts() {
+      let base = [
+        "Arya Stark",
+        "Jon Snow",
+        "Daenerys Targaryen",
+        "Melisandre",
+        "Tyrion Lannister"
+      ]
+
+      base = [...base, `ID:${this.id}`]
+      base = [...base, `ANALYSIS:${this.analysis}`]
+      base = [...base, `AGE:${Math.floor(Math.random(1) * 30 + 20)}`]
+      base = [...base, `STATE:${this.states[Math.floor(Math.random(1) * 6)]}`]
+      base = [
+        ...base,
+        `RATING:${this.states[Math.floor(Math.random(1) * 1000000)]}`
+      ]
+
+      return base
     }
   },
   created() {
@@ -68,24 +82,27 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $color: blue;
 
 .vue-typer {
+  z-index: 99999;
   font-family: monospace;
 }
 
 .vue-typer .custom.char {
-  color: #d4d4bd;
-  background-color: #1e1e1e;
+  color: #d4d4bd !important ;
+  // background-color: #1e1e1e;
 }
 .vue-typer .custom.char.selected {
-  background-color: #264f78;
+  background-color: black;
+  color: #d4d4bd;
 }
 
 .vue-typer .custom.caret {
   width: 10px;
-  background-color: #3f51b5;
+  background-color: lightgrey;
+  color: #d4d4bd;
 }
 
 .item {
@@ -105,6 +122,7 @@ $color: blue;
     font-size: 0.8rem;
     background-color: blue;
     color: white;
+    font-weight: bold;
   }
 
   .extra {
@@ -113,13 +131,14 @@ $color: blue;
     top: 0;
     right: 0;
     bottom: 0;
+    text-align: right;
 
     span {
-      font-size: 1.275rem;
+      font-size: 0.75rem;
       background: black;
       color: white;
-      display: block;
-      text-align: right;
+      padding: 4px 2px;
+      display: inline-block;
     }
   }
 
