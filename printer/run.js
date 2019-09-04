@@ -92,7 +92,14 @@ firestore
       let barcode = Math.floor(Math.random() * 899999999999 + 100000000000)
 
       console.log("[get data] meta information: ", { age, rating })
-      console.log("code: ", barcode)
+      console.log("[get data] code: ", barcode)
+
+      for (var i = 0; i < 10; i++) {
+        console.log(
+          "[fetching ...] " +
+            Math.floor(Math.random() * 899999999999 + 100000000000)
+        )
+      }
 
       await printer.font("a")
       await printer.align("ct")
