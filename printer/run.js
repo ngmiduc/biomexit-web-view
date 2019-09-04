@@ -49,7 +49,7 @@ const device = new escpos.USB(vid, pid) //'0x04b8','0x0202'
 const options = { encoding: "GB18030" /* default */ }
 const printer = new escpos.Printer(device, options)
 
-console.log("printer] device : ", device)
+console.log("[printer] device : ", device)
 
 firestore
   .collection("faces")
