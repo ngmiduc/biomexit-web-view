@@ -56,7 +56,9 @@ firestore
   .orderBy("date", "desc")
   .limit(1)
   .onSnapshot(querySnapshot => {
-    // console.log("get DATA")
+    console.log("")
+    console.log("[detecting new data ...]")
+    console.log("")
     let tmp = []
     querySnapshot.forEach(doc => {
       tmp.push({ id: doc.id, data: doc.data(), meta: doc.metadata })
