@@ -1,25 +1,9 @@
-console.log("running PRINTER server")
-var fs = require("fs")
-
-//var Printer = require('node-printer');
-//console.log(Printer.list());
-
-// Create a new Pinter from available devices
-//var printer = new Printer('Epson-TM-BA-Thermal');
-
-// Print from a buffer, file path or text
-//var fileBuffer = fs.readFileSync('favicon.ico');
-//var jobFromBuffer = printer.printBuffer(fileBuffer);
-
-//var filePath = 'package.json';
-//var jobFromFile = printer.printFile(filePath);
-
-//var jobFromFile = printer.printFile('favicon.ico');
-
-//var text = 'Print text directly, when needed: e.g. barcode printers'
-//var jobFromText = printer.printText(text);
+console.log("[printer] start local NODEjs server")
+console.log("[printer] PRINTER server is starting")
 
 const admin = require("firebase-admin")
+const usb = require("usb")
+const escpos = require("escpos")
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -39,52 +23,33 @@ admin.initializeApp({
   storageBucket: "biomexit.appspot.com"
 })
 
-var bucket = admin.storage().bucket()
+console.log("[printer] init database")
+// var bucket = admin.storage().bucket()
 var firestore = admin.firestore()
 
-var usb = require("usb")
 const list = usb.getDeviceList()
+console.log("[printer] get USB device list")
 let pid = null
 let vid = null
 
 list.forEach(d => {
+  console.log("[printer] get device")
   if (
     d.deviceDescriptor.bcdDevice == 256 &&
     d.deviceDescriptor.bMaxPacketSize0 == 64
   ) {
+    console.log("[printer] found printer")
     vid = d.deviceDescriptor.idVendor
     pid = d.deviceDescriptor.idProduct
-    console.log("get VID and PID", { vid, pid })
+    console.log("[printer] get VID and PID", { vid, pid })
   }
 })
 
-console.log("LOGGED IN")
-
-const escpos = require("escpos")
-let device = new escpos.USB(vid, pid) //'0x04b8','0x0202'
+const device = new escpos.USB(vid, pid) //'0x04b8','0x0202'
 const options = { encoding: "GB18030" /* default */ }
-const printer2 = new escpos.Printer(device, options)
-const bodyParser = require("body-parser")
-const express = require("express")
-const app = express()
+const printer = new escpos.Printer(device, options)
 
-console.log("device : ", device)
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  )
-  next()
-})
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-)
-
-app.use(bodyParser.json())
+console.log("printer] device : ", device)
 
 firestore
   .collection("faces")
@@ -102,14 +67,14 @@ firestore
       id: tmp[0].id,
       analysis: tmp[0].data.analysis
     }
-
-    console.log("GET new data from tracking ...")
+    console.log("")
+    console.log("[get data] GET new data from tracking ...")
 
     let today = new Date()
     today.setTime(today.getTime() + 1 * 86400000)
     today = today.toISOString()
     today = today.split("T")[0]
-    console.log("timedate: ", today)
+    console.log("[get data] timedate: ", today)
 
     device.open(async function() {
       let state = [
@@ -125,116 +90,22 @@ firestore
       let age = Math.floor(Math.random(1) * 30 + 20)
       let rating = Math.floor(Math.random(1) * 1000000)
       let barcode = Math.floor(Math.random() * 899999999999 + 100000000000)
-      console.log("code: ", barcode)
-      await printer2
-        .font("a")
-        .align("ct")
-        .style("bu")
-        .size(1, 1)
-        .text("")
-        .text("TIME " + today)
-        .text("ID " + item.id)
-        .text("ANALYSIS " + item.analysis)
-        .text("STATE " + state[Math.floor(Math.random() * 8)])
-        .text("RATING " + rating)
-        .text("AGE: " + age)
-        .barcode("" + barcode, "EAN13")
 
-      await printer2.close()
+      console.log("[get data] meta information: ", { age, rating })
+      console.log("code: ", barcode)
+
+      await printer.font("a")
+      await printer.align("ct")
+      await printer.style("bu")
+      await printer.size(1, 1)
+      await printer.text("")
+      await printer.text("TIME " + today)
+      await printer.text("ID " + item.id)
+      await printer.text("ANALYSIS " + item.analysis)
+      await printer.text("STATE " + state[Math.floor(Math.random() * 8)])
+      await printer.text("RATING " + rating)
+      await printer.text("AGE: " + age)
+      await printer.barcode("" + barcode, "EAN13")
+      await printer.close()
     })
   })
-
-let busy = false
-app.post("/", async function(req, res) {
-  if (!busy) {
-    busy = true
-    console.log("get request from network")
-
-    console.log(req.body)
-
-    //let file = bucket.file('faces/'+req.body.image+'.jpg')
-    let today = new Date()
-    today.setTime(today.getTime() + 1 * 86400000)
-    today = today.toISOString()
-    today = today.split("T")[0]
-    console.log("today", today)
-
-    //let signedUrls = await file.getSignedUrl({
-    //action: 'read',
-    //expires: today
-    //})
-
-    //.then(signedUrls => {
-    // signedUrls[0] contains the file's public URL
-    //});
-
-    //signedUrls = signedUrls[0]
-
-    //console.log("signed URLS", signedUrls)
-
-    //let tux = "https://wiki.ubc.ca/images/4/41/Every_Icon.png"
-    //  let tux = signedUrls
-
-    //var base64Img = require('base64-img');
-
-    //base64Img.requestBase64("https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2FtOGjxf5MQBe6KKaQYtoR.jpg?alt=media&token=f0a57335-abea-4a69-9374-9a644d264300", function(err, res, body) {
-    //=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
-
-    //console.log("body", body)
-
-    //escpos.Image.load(body, function(image){
-
-    device.open(async function() {
-      let state = [
-        "single",
-        "married",
-        "divorced",
-        "celibate",
-        "unknown",
-        "open",
-        "widow",
-        "role"
-      ]
-      let age = Math.floor(Math.random(1) * 30 + 20)
-      let rating = Math.floor(Math.random(1) * 1000000)
-      let barcode = Math.floor(Math.random() * 899999999999 + 100000000000)
-      console.log("code", barcode)
-      await printer2
-        .font("a")
-        .align("ct")
-        .style("bu")
-        .size(1, 1)
-        .text("")
-        .text("TIME " + today)
-        .text("ID " + req.body.id)
-        .text("ANALYSIS " + req.body.analysis)
-        .text("STATE " + state[Math.floor(Math.random() * 8)])
-        .text("RATING " + rating)
-        .text("AGE: " + age)
-        .barcode("" + barcode, "EAN13")
-
-      /*await printer2.image(image, 's8')
-	await printer2.image(image, 'd8')
-	await printer2.image(image, 's24')
-	await printer2.image(image, 'd24')
-
-	await printer2.raster(image)
-	await printer2.raster(image, 'dw')
-	await printer2.raster(image, 'dh')
-	await printer2.raster(image, 'dwdh')
-*/
-      //.cut()
-      await printer2.close()
-    })
-
-    busy = false
-    //});
-
-    //});
-  }
-  res.send("ok")
-})
-
-// app.listen(3000, "0.0.0.0", function() {
-//   console.log("Listening to port:  " + 3000)
-// })
