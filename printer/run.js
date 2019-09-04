@@ -5,6 +5,9 @@ const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
 
+const http = require('http');
+const fs = require('fs');
+
 const cerd = require("./cerd.json")
 
 admin.initializeApp({
@@ -13,7 +16,7 @@ admin.initializeApp({
 })
 
 console.log("[printer] init database")
-// var bucket = admin.storage().bucket()
+var bucket = admin.storage().bucket()
 var firestore = admin.firestore()
 
 const list = usb.getDeviceList()
@@ -64,6 +67,24 @@ firestore
     console.log("")
     console.log("[get data] GET new data from tracking ...")
 
+    //add bucket get image  OPTIONAL
+    // e.g.: URL is https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces?alt=media&token=5d85f49d-e2cc-4ac4-8254-f4b111ebd1a2
+    //const filename = item.url.split("")
+    //const file = bucket.file(fileName);
+    //return file.getSignedUrl({
+    //  action: 'read',
+    //  expires: '03-09-2491'
+    //}).then(signedUrls => {
+    //  // signedUrls[0] contains the file's public URL
+    //});
+  
+  const file = fs.createWriteStream("file.jpg");
+  const request = http.get(item.url, function(response) {
+    var stream = response.pipe(file);
+ stream.on('finish', function () { 
+  
+  //end bucket get image
+  
     let today = new Date()
     today.setTime(today.getTime() + 1 * 86400000)
     today = today.toISOString()
@@ -103,6 +124,7 @@ firestore
         await printer.size(1, 1)
         await printer.text("")
         await printer.text("TIME " + today)
+        await printer.text("BIOMETRIC EXIT")
         await printer.text("ID " + item.id)
         await printer.text("ANALYSIS " + item.analysis)
         await printer.text("STATE " + state[Math.floor(Math.random() * 8)])
@@ -118,4 +140,7 @@ firestore
       console.log("[BLOCK DATA]")
       console.log("[BLOCK DATA]")
     }
+    
+    });
+     });
   })
