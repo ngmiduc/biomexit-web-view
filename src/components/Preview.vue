@@ -50,7 +50,16 @@ export default {
   },
   data() {
     return {
-      states: ["single", "married", "hi", "divorced", "liquid", "selleba"],
+      states: [
+        "single",
+        "married",
+        "divorced",
+        "celibate",
+        "unknown",
+        "open",
+        "widow",
+        "role"
+      ],
       url: "",
       analysis: "",
       id: "",
@@ -71,7 +80,7 @@ export default {
       base = [...base, `ID:${this.id}`]
       base = [...base, `ANALYSIS:${this.analysis}`]
       base = [...base, `AGE:${Math.floor(Math.random(1) * 30 + 20)}`]
-      base = [...base, `STATE:${this.states[Math.floor(Math.random(1) * 6)]}`]
+      base = [...base, `STATE:${this.states[Math.floor(Math.random(1) * 8)]}`]
       base = [
         ...base,
         `RATING:${this.states[Math.floor(Math.random(1) * 1000000)]}`

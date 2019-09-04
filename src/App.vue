@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <button type="button" name="button" @click="tick"></button>
+    <button type="button" name="button" @click="tick()"></button>
     <div id="login" v-if="!auth"></div>
     <div v-if="auth" class="gallery">
       <preview
@@ -34,10 +34,22 @@ export default {
     }
   },
   methods: {
-    tick() {
+    tick(f, id, analysis) {
+      let file = f
+        ? f
+        : "https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2FtOGjxf5MQBe6KKaQYtoR.jpg?alt=media&token=f0a57335-abea-4a69-9374-9a644d264300"
+
+      file = file.split("biomexit.appspot.com/o/faces%2")[1]
+      file = file.split(".jpg")[0]
+      console.log(file)
+
+      let idX = id ? id : undefined
+      let analysisX = analysis ? analysis : undefined
+
       axios.post("http://192.168.1.52:3000", {
-        image:
-          "https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2FtOGjxf5MQBe6KKaQYtoR.jpg?alt=media&token=f0a57335-abea-4a69-9374-9a644d264300"
+        image: file,
+        id: idX,
+        analysis: analysisX
       })
     },
     getData() {
@@ -69,6 +81,9 @@ export default {
           // console.log(tmp[0])
           this.pos = pos
           Vue.set(this.faces, pos, tmp[0])
+          console.log("get new cctv")
+
+          this.tick(tmp[0].data.url, tmp[0].id, tmp[0].data.analysis)
 
           // this.faces[pos] = tmp[0]
         })
