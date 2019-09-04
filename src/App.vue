@@ -83,9 +83,7 @@ export default {
           Vue.set(this.faces, pos, tmp[0])
           console.log("get new cctv")
 
-          this.tick(tmp[0].data.url, tmp[0].id, tmp[0].data.analysis)
-
-          // this.faces[pos] = tmp[0]
+          // this.tick(tmp[0].data.url, tmp[0].id, tmp[0].data.analysis)
         })
     }
   },

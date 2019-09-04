@@ -40,6 +40,7 @@ admin.initializeApp({
 })
 
 var bucket = admin.storage().bucket()
+var firestore = admin.firestore()
 
 var usb = require("usb")
 const list = usb.getDeviceList()
@@ -51,17 +52,16 @@ list.forEach(d => {
     d.deviceDescriptor.bcdDevice == 256 &&
     d.deviceDescriptor.bMaxPacketSize0 == 64
   ) {
-    console.log(d)
     vid = d.deviceDescriptor.idVendor
     pid = d.deviceDescriptor.idProduct
+    console.log("get VID and PID", { vid, pid })
   }
 })
 
 console.log("LOGGED IN")
 
 const escpos = require("escpos")
-//'0x04b8','0x0202'
-let device = new escpos.USB(vid, pid)
+let device = new escpos.USB(vid, pid) //'0x04b8','0x0202'
 const options = { encoding: "GB18030" /* default */ }
 const printer2 = new escpos.Printer(device, options)
 const bodyParser = require("body-parser")
@@ -85,6 +85,64 @@ app.use(
 )
 
 app.use(bodyParser.json())
+
+firestore
+  .collection("faces")
+  .orderBy("date", "desc")
+  .limit(1)
+  .onSnapshot(querySnapshot => {
+    // console.log("get DATA")
+    let tmp = []
+    querySnapshot.forEach(doc => {
+      tmp.push({ id: doc.id, data: doc.data(), meta: doc.metadata })
+    })
+
+    let item = {
+      url: tmp[0].data.url,
+      id: tmp[0].id,
+      analysis: tmp[0].data.analysis
+    }
+
+    console.log("GET new data from tracking ...")
+
+    let today = new Date()
+    today.setTime(today.getTime() + 1 * 86400000)
+    today = today.toISOString()
+    today = today.split("T")[0]
+    console.log("timedate: ", today)
+
+    device.open(async function() {
+      let state = [
+        "single",
+        "married",
+        "divorced",
+        "celibate",
+        "unknown",
+        "open",
+        "widow",
+        "role"
+      ]
+      let age = Math.floor(Math.random(1) * 30 + 20)
+      let rating = Math.floor(Math.random(1) * 1000000)
+      let barcode = Math.floor(Math.random() * 899999999999 + 100000000000)
+      console.log("code: ", barcode)
+      await printer2
+        .font("a")
+        .align("ct")
+        .style("bu")
+        .size(1, 1)
+        .text("")
+        .text("TIME " + today)
+        .text("ID " + item.id)
+        .text("ANALYSIS " + item.analysis)
+        .text("STATE " + state[Math.floor(Math.random() * 8)])
+        .text("RATING " + rating)
+        .text("AGE: " + age)
+        .barcode("" + barcode, "EAN13")
+
+      await printer2.close()
+    })
+  })
 
 let busy = false
 app.post("/", async function(req, res) {
