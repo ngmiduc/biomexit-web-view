@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <button type="button" name="button" @click="tick()"></button>
+    <!-- <button type="button" name="button" @click="tick()"></button> -->
     <div id="login" v-if="!auth"></div>
     <div v-if="auth" class="gallery">
       <preview
