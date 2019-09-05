@@ -17,6 +17,8 @@
     "express": "^4.17.1",
     "firebase": "^6.5.0",
     "firebase-admin": "^8.4.0",
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
     "lsusb": "^1.0.0",
     "node-hid": "^0.7.9",
     "node-printer": "^1.0.4",
