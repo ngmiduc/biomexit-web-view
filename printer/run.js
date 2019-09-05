@@ -95,7 +95,7 @@ firestore
 
         console.log("URL : " + sURL)
 
-        fs.unlink("file", async function(err) {
+        fs.unlink("file.png", async function(err) {
           if (err) throw err
           // if no error, file has been deleted successfully
           console.log("File deleted!")
@@ -125,7 +125,7 @@ firestore
 
           async function downloadImage() {
             const url = item.url
-            const path = Path.resolve(__dirname, "file")
+            const path = Path.resolve(__dirname, "file.png")
             const writer = Fs.createWriteStream(path)
 
             const response = await Axios({
@@ -156,7 +156,7 @@ firestore
           if (!BUSY) {
             BUSY = true
 
-            const tux = path.join(__dirname, "file")
+            const tux = path.join(__dirname, "file.png")
             escpos.Image.load(tux, function(image) {
               device.open(async function() {
                 let state = [
