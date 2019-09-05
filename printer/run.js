@@ -8,13 +8,6 @@ const path = require("path")
 const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
-import ESCPOSImageProcessor from "@printurmessages/escpos-image-processor"
-
-const processor = new ESCPOSImageProcessor({
-  width: 185 /* optional, defaults to 185 (default 40mm printer roll width in px) */,
-  quality:
-    "best" /* optional, defaults to 'best' (slowest). another option is 'good', which is faster but produces worse results */
-})
 
 const sharp = require("sharp")
 
@@ -150,11 +143,11 @@ firestore
 
           await downloadImage()
 
-          fs.unlink("file2.jpg", async function(err) {
+          fs.unlink("file2.png", async function(err) {
             if (err) throw err
 
             let inputFile = "file.png"
-            let outputFile = "file2.jpg"
+            let outputFile = "file2.png"
 
             sharp(inputFile)
               .resize({ width: 200 })
@@ -162,22 +155,15 @@ firestore
               .then(function() {
                 console.log("Success : FILE RESIZED")
 
-                processor.convert("file.jpg", "processed.png").then(path => {
-                  if (path) {
-                    console.log(`Processed image saved to ${path}, printing...`)
+                console.log("URL is " + item.url)
 
-                    processor.print(device, printer)
-                  } else console.log("An Error Occurred")
+                console.log("[get data] timedate: ", today)
 
-                  console.log("URL is " + item.url)
+                if (!BUSY) {
+                  BUSY = true
 
-                  console.log("[get data] timedate: ", today)
-
-                  if (!BUSY) {
-                    BUSY = true
-
-                    // const tux = path.join(__dirname, "file2.jpg")
-                    // escpos.Image.load(tux, function(image) {
+                  const tux = path.join(__dirname, "file2.png")
+                  escpos.Image.load(tux, function(image) {
                     device.open(async function() {
                       let state = [
                         "single",
@@ -226,18 +212,17 @@ firestore
                       await printer.text("AGE: " + age)
                       await printer.barcode("" + barcode, "EAN13")
 
-                      // await printer.image(image, "s8")
+                      await printer.image(image, "s8")
                       await printer.close()
                     })
-                    // })
+                  })
 
-                    BUSY = false
-                  } else {
-                    console.log("[BLOCK DATA]")
-                    console.log("[BLOCK DATA]")
-                    console.log("[BLOCK DATA]")
-                  }
-                })
+                  BUSY = false
+                } else {
+                  console.log("[BLOCK DATA]")
+                  console.log("[BLOCK DATA]")
+                  console.log("[BLOCK DATA]")
+                }
               })
           })
         })
