@@ -163,7 +163,7 @@ firestore
                 if (!BUSY) {
                   BUSY = true
 
-                  const tux = path.join(__dirname, "file2.png")
+                  const tux = path.join(__dirname, "test.png")
                   escpos.Image.load(tux, function(image) {
                     device.open(async function() {
                       let state = [
