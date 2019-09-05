@@ -84,6 +84,8 @@ firestore
 
         const sURL = signedUrls[0]
 
+        console.log("URL : " + sURL)
+
         fs.unlink("file.jpg", function(err) {
           if (err) throw err
           // if no error, file has been deleted successfully
