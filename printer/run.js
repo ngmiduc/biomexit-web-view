@@ -147,7 +147,7 @@ firestore
           await downloadImage()
 
           let inputFile = "file.png"
-          let outputFile = "file.png"
+          let outputFile = "file2.png"
 
           sharp(inputFile)
             .resize({ width: 100 })
