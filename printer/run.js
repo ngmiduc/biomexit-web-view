@@ -95,7 +95,7 @@ firestore
 
         console.log("URL : " + sURL)
 
-        fs.unlink("file.jpg", async function(err) {
+        fs.unlink("file", async function(err) {
           if (err) throw err
           // if no error, file has been deleted successfully
           console.log("File deleted!")
