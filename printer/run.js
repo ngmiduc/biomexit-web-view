@@ -4,8 +4,6 @@ console.log("[printer] start local NODEjs server")
 console.log("[printer] PRINTER server is starting")
 
 const axios = require("axios")
-const path = require("path")
-const Path = require("path")
 const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
@@ -125,7 +123,7 @@ firestore
 
           async function downloadImage() {
             const url = item.url
-            const path = Path.resolve(__dirname, "file.png")
+            const path = "file.png"
             const writer = fs.createWriteStream(path)
 
             const response = await axios({
@@ -184,7 +182,7 @@ firestore
                         console.log("An Error Occurred")
                       }
 
-                      const tux = path.join(__dirname, "file2.png")
+                      const tux = "file2.png"
                       escpos.Image.load(tux, function(image) {
                         device.open(async function() {
                           let state = [
