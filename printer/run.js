@@ -5,6 +5,7 @@ console.log("[printer] PRINTER server is starting")
 
 const axios = require("axios")
 const path = require("path")
+const Path = require("path")
 const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
@@ -124,7 +125,7 @@ firestore
 
           async function downloadImage() {
             const url = item.url
-            const path = path.resolve(__dirname, "file.png")
+            const path = Path.resolve(__dirname, "file.png")
             const writer = fs.createWriteStream(path)
 
             const response = await axios({
