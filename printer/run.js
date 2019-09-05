@@ -8,6 +8,8 @@ const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
 
+const sharp = require("sharp")
+
 const http = require("https")
 const fs = require("fs")
 
@@ -143,6 +145,19 @@ firestore
           }
 
           await downloadImage()
+
+          let inputFile = "file.png"
+          let outputFile = "file.png"
+
+          sharp(inputFile)
+            .resize({ width: 100 })
+            .toFile(outputFile)
+            .then(function() {
+              console.log("Success")
+            })
+            .catch(function(err) {
+              console.log("Error occured")
+            })
 
           console.log("URL is " + item.url)
           // const file = fs.createWriteStream("file.jpg")
