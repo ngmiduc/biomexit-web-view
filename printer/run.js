@@ -3,10 +3,18 @@
 console.log("[printer] start local NODEjs server")
 console.log("[printer] PRINTER server is starting")
 
+const axios = require("axios")
 const path = require("path")
 const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
+const ESCPOSImageProcessor = require("@printurmessages/escpos-image-processor")
+
+const processor = new ESCPOSImageProcessor({
+  width: 185 /* optional, defaults to 185 (default 40mm printer roll width in px) */,
+  quality:
+    "best" /* optional, defaults to 'best' (slowest). another option is 'good', which is faster but produces worse results */
+})
 
 const sharp = require("sharp")
 
@@ -121,16 +129,12 @@ firestore
           // download(sURL, "file.jpg", function() {
           // console.log("GOT IMAGE")
 
-          const Fs = require("fs")
-          const Path = require("path")
-          const Axios = require("axios")
-
           async function downloadImage() {
             const url = item.url
-            const path = Path.resolve(__dirname, "file.png")
-            const writer = Fs.createWriteStream(path)
+            const path = path.resolve(__dirname, "file.png")
+            const writer = fs.createWriteStream(path)
 
-            const response = await Axios({
+            const response = await axios({
               url,
               method: "GET",
               responseType: "stream"
@@ -158,15 +162,22 @@ firestore
               .then(function() {
                 console.log("Success : FILE RESIZED")
 
-                console.log("URL is " + item.url)
+                processor.convert("file.jpg", "processed.png").then(path => {
+                  if (path) {
+                    console.log(`Processed image saved to ${path}, printing...`)
 
-                console.log("[get data] timedate: ", today)
+                    processor.print(device, printer)
+                  } else console.log("An Error Occurred")
 
-                if (!BUSY) {
-                  BUSY = true
+                  console.log("URL is " + item.url)
 
-                  const tux = path.join(__dirname, "file2.jpg")
-                  escpos.Image.load(tux, function(image) {
+                  console.log("[get data] timedate: ", today)
+
+                  if (!BUSY) {
+                    BUSY = true
+
+                    // const tux = path.join(__dirname, "file2.jpg")
+                    // escpos.Image.load(tux, function(image) {
                     device.open(async function() {
                       let state = [
                         "single",
@@ -215,17 +226,18 @@ firestore
                       await printer.text("AGE: " + age)
                       await printer.barcode("" + barcode, "EAN13")
 
-                      await printer.image(image, "s8")
+                      // await printer.image(image, "s8")
                       await printer.close()
                     })
-                  })
+                    // })
 
-                  BUSY = false
-                } else {
-                  console.log("[BLOCK DATA]")
-                  console.log("[BLOCK DATA]")
-                  console.log("[BLOCK DATA]")
-                }
+                    BUSY = false
+                  } else {
+                    console.log("[BLOCK DATA]")
+                    console.log("[BLOCK DATA]")
+                    console.log("[BLOCK DATA]")
+                  }
+                })
               })
           })
         })
