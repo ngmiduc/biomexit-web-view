@@ -153,7 +153,7 @@ firestore
             let outputFile = "file2.jpg"
 
             sharp(inputFile)
-              .resize({ width: 300 })
+              .resize({ width: 200 })
               .toFile(outputFile)
               .then(function() {
                 console.log("Success : FILE RESIZED")
