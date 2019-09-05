@@ -8,7 +8,7 @@ const path = require("path")
 const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
-const ESCPOSImageProcessor = require("@printurmessages/escpos-image-processor")
+import ESCPOSImageProcessor from "@printurmessages/escpos-image-processor"
 
 const processor = new ESCPOSImageProcessor({
   width: 185 /* optional, defaults to 185 (default 40mm printer roll width in px) */,
