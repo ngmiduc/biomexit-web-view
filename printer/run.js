@@ -125,7 +125,7 @@ firestore
 
           async function downloadImage() {
             const url = item.url
-            const path = Path.resolve(__dirname, "file.jpg")
+            const path = Path.resolve(__dirname, "file")
             const writer = Fs.createWriteStream(path)
 
             const response = await Axios({
@@ -156,7 +156,7 @@ firestore
           if (!BUSY) {
             BUSY = true
 
-            const tux = path.join(__dirname, "file.jpg")
+            const tux = path.join(__dirname, "file")
             escpos.Image.load(tux, function(image) {
               device.open(async function() {
                 let state = [
