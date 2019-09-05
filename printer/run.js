@@ -116,7 +116,7 @@ firestore
 
           // download(sURL, "file.jpg", function() {
           // console.log("GOT IMAGE")
-
+          console.log("URL is " + sURL)
           const file = fs.createWriteStream("file.jpg")
           const request = http.get(sURL, function(response) {
             var stream = response.pipe(file)
