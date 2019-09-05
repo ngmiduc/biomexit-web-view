@@ -150,7 +150,7 @@ firestore
             if (err) throw err
 
             let inputFile = "file.png"
-            let outputFile = "file2.png"
+            let outputFile = "file2.jpg"
 
             sharp(inputFile)
               .resize({ width: 300 })
@@ -175,7 +175,7 @@ firestore
           if (!BUSY) {
             BUSY = true
 
-            const tux = path.join(__dirname, "file2.png")
+            const tux = path.join(__dirname, "file2.jpg")
             escpos.Image.load(tux, function(image) {
               device.open(async function() {
                 let state = [
