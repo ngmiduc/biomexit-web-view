@@ -172,7 +172,7 @@ firestore
                   })
 
                   processor
-                    .convert("file.png", "try.png")
+                    .convert("file2.png", "file2.png")
                     .then(path => {
                       if (path) {
                         console.log(
@@ -186,7 +186,7 @@ firestore
                     })
                     .catch(error => console.error(error))
 
-                  const tux = path.join(__dirname, "try.png")
+                  const tux = path.join(__dirname, "file2.png")
                   escpos.Image.load(tux, function(image) {
                     device.open(async function() {
                       let state = [
