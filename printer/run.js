@@ -79,6 +79,8 @@ firestore
     fileName = fileName.split(".jpg")[0]
     fileName = "faces/" + fileName + ".jpg"
     const file = bucket.file(fileName)
+    console.log("FILE : " + fileName)
+    console.log("FILE : " + file)
     return file
       .getSignedUrl({
         action: "read",
@@ -96,20 +98,20 @@ firestore
           // if no error, file has been deleted successfully
           console.log("File deleted!")
 
-          var request = require("request")
-          var download = function(uri, filename, callback) {
-            request.head(uri, function(err, res, body) {
-              console.log("content-type:", res.headers["content-type"])
-              console.log("content-length:", res.headers["content-length"])
-
-              request(uri)
-                .pipe(fs.createWriteStream(filename))
-                .on("close", callback)
-            })
-          }
+          // var request = require("request")
+          // var download = function(uri, filename, callback) {
+          //   request.head(uri, function(err, res, body) {
+          //     console.log("content-type:", res.headers["content-type"])
+          //     console.log("content-length:", res.headers["content-length"])
+          //
+          //     request(uri)
+          //       .pipe(fs.createWriteStream(filename))
+          //       .on("close", callback)
+          //   })
+          // }
 
           await file.download({
-            destination: "file2.jpg"
+            destination: "file.jpg"
           })
 
           // download(sURL, "file.jpg", function() {
