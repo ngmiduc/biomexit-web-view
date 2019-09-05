@@ -140,14 +140,6 @@ firestore
               await printer.barcode("" + barcode, "EAN13")
 
               await printer.image(image, "s8")
-              await printer.image(image, "d8")
-              await printer.image(image, "s24")
-              await printer.image(image, "d24")
-
-              await printer.raster(image)
-              await printer.raster(image, "dw")
-              await printer.raster(image, "dh")
-              await printer.raster(image, "dwdh")
               await printer.close()
             })
           })
