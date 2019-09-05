@@ -68,6 +68,11 @@ firestore
     console.log("")
     console.log("[get data] GET new data from tracking ...")
 
+    let today = new Date()
+    today.setTime(today.getTime() + 1 * 86400000)
+    today = today.toISOString()
+    today = today.split("T")[0]
+
     //add bucket get image  OPTIONAL
     // e.g.: URL is https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2F583.jpg?alt=media&token=b662d5ec-259c-4851-8d50-4bea52dfcb1a
     let fileName = item.url.split("iomexit.appspot.com/o/faces%2")[1]
@@ -77,7 +82,7 @@ firestore
     return file
       .getSignedUrl({
         action: "read",
-        expires: "03-09-2491"
+        expires: today
       })
       .then(signedUrls => {
         // signedUrls[0] contains the file's public URL
@@ -97,10 +102,6 @@ firestore
             stream.on("finish", function() {
               //end bucket get image
 
-              let today = new Date()
-              today.setTime(today.getTime() + 1 * 86400000)
-              today = today.toISOString()
-              today = today.split("T")[0]
               console.log("[get data] timedate: ", today)
 
               if (!BUSY) {
