@@ -149,7 +149,7 @@ firestore
             let outputFile = "file2.png"
 
             sharp(inputFile)
-              .resize({ width: 400, height: 300 })
+              .resize({ height: 400, width: 300 })
               .grayscale()
               .toFile(outputFile)
               .then(function() {
@@ -165,7 +165,7 @@ firestore
                   const ESCPOSImageProcessor = require("escpos-image-processor")
 
                   const processor = new ESCPOSImageProcessor({
-                    width: 400,
+                    width: 185,
                     quality: "best"
                   })
 
