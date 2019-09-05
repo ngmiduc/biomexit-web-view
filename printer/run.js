@@ -179,14 +179,14 @@ firestore
                           `Processed image saved to ${path}, printing...`
                         )
 
-                        processor.print(device, printer)
+                        // processor.print(device, printer)
                       } else {
                         console.log("An Error Occurred")
                       }
                     })
                     .catch(error => console.error(error))
 
-                  const tux = path.join(__dirname, "file2.png")
+                  const tux = path.join(__dirname, "try.png")
                   escpos.Image.load(tux, function(image) {
                     device.open(async function() {
                       let state = [
