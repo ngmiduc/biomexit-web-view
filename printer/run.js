@@ -149,7 +149,7 @@ firestore
             let outputFile = "file2.png"
 
             sharp(inputFile)
-              .resize({ height: 400, width: 300 })
+              .resize({ width: 500, height: 300 })
               .grayscale()
               .toFile(outputFile)
               .then(function() {
