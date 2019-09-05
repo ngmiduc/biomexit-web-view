@@ -152,6 +152,7 @@ firestore
 
             sharp(inputFile)
               .resize({ width: 200 })
+              .grayscale()
               .toFile(outputFile)
               .then(function() {
                 console.log("Success : FILE RESIZED")
