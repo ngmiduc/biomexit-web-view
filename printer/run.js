@@ -91,7 +91,7 @@ firestore
 
         console.log("URL : " + sURL)
 
-        fs.unlink("file.jpg", function(err) {
+        fs.unlink("file.jpg", async function(err) {
           if (err) throw err
           // if no error, file has been deleted successfully
           console.log("File deleted!")
@@ -108,81 +108,85 @@ firestore
             })
           }
 
-          download(sURL, "file.jpg", function() {
-            console.log("GOT IMAGE")
-
-            // const file = fs.createWriteStream("file.jpg")
-            // const request = http.get(sURL, function(response) {
-            // var stream = response.pipe(file)
-            // stream.on("finish", function() {
-            //end bucket get image
-
-            console.log("[get data] timedate: ", today)
-
-            if (!BUSY) {
-              BUSY = true
-
-              const tux = path.join(__dirname, "file.jpg")
-              escpos.Image.load(tux, function(image) {
-                device.open(async function() {
-                  let state = [
-                    "single",
-                    "married",
-                    "divorced",
-                    "celibate",
-                    "unknown",
-                    "open",
-                    "widow",
-                    "role"
-                  ]
-                  let age = Math.floor(Math.random(1) * 30 + 20)
-                  let rating = Math.floor(Math.random(1) * 1000000)
-                  let barcode = Math.floor(
-                    Math.random() * 899999999999 + 100000000000
-                  )
-
-                  console.log("[get data] meta information: ", {
-                    age,
-                    rating
-                  })
-                  console.log("[get data] code: ", barcode)
-
-                  for (var i = 0; i < 10; i++) {
-                    console.log(
-                      "[fetching ...] " +
-                        Math.floor(Math.random() * 899999999999 + 100000000000)
-                    )
-                  }
-
-                  await printer.font("a")
-                  await printer.align("ct")
-                  await printer.style("bu")
-                  await printer.size(1, 1)
-                  await printer.text("")
-                  await printer.text("TIME " + today)
-                  await printer.text("BIOMETRIC EXIT")
-                  await printer.text("ID " + item.id)
-                  await printer.text("ANALYSIS " + item.analysis)
-                  await printer.text(
-                    "STATE " + state[Math.floor(Math.random() * 8)]
-                  )
-                  await printer.text("RATING " + rating)
-                  await printer.text("AGE: " + age)
-                  await printer.barcode("" + barcode, "EAN13")
-
-                  await printer.image(image, "s8")
-                  await printer.close()
-                })
-              })
-
-              BUSY = false
-            } else {
-              console.log("[BLOCK DATA]")
-              console.log("[BLOCK DATA]")
-              console.log("[BLOCK DATA]")
-            }
+          await file.download({
+            destination: "file2.jpg"
           })
+
+          // download(sURL, "file.jpg", function() {
+          // console.log("GOT IMAGE")
+
+          // const file = fs.createWriteStream("file.jpg")
+          // const request = http.get(sURL, function(response) {
+          // var stream = response.pipe(file)
+          // stream.on("finish", function() {
+          //end bucket get image
+
+          console.log("[get data] timedate: ", today)
+
+          if (!BUSY) {
+            BUSY = true
+
+            const tux = path.join(__dirname, "file.jpg")
+            escpos.Image.load(tux, function(image) {
+              device.open(async function() {
+                let state = [
+                  "single",
+                  "married",
+                  "divorced",
+                  "celibate",
+                  "unknown",
+                  "open",
+                  "widow",
+                  "role"
+                ]
+                let age = Math.floor(Math.random(1) * 30 + 20)
+                let rating = Math.floor(Math.random(1) * 1000000)
+                let barcode = Math.floor(
+                  Math.random() * 899999999999 + 100000000000
+                )
+
+                console.log("[get data] meta information: ", {
+                  age,
+                  rating
+                })
+                console.log("[get data] code: ", barcode)
+
+                for (var i = 0; i < 10; i++) {
+                  console.log(
+                    "[fetching ...] " +
+                      Math.floor(Math.random() * 899999999999 + 100000000000)
+                  )
+                }
+
+                await printer.font("a")
+                await printer.align("ct")
+                await printer.style("bu")
+                await printer.size(1, 1)
+                await printer.text("")
+                await printer.text("TIME " + today)
+                await printer.text("BIOMETRIC EXIT")
+                await printer.text("ID " + item.id)
+                await printer.text("ANALYSIS " + item.analysis)
+                await printer.text(
+                  "STATE " + state[Math.floor(Math.random() * 8)]
+                )
+                await printer.text("RATING " + rating)
+                await printer.text("AGE: " + age)
+                await printer.barcode("" + barcode, "EAN13")
+
+                await printer.image(image, "s8")
+                await printer.close()
+              })
+            })
+
+            BUSY = false
+          } else {
+            console.log("[BLOCK DATA]")
+            console.log("[BLOCK DATA]")
+            console.log("[BLOCK DATA]")
+          }
         })
       })
+    // })
     // })
   })
