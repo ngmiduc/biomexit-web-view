@@ -146,7 +146,7 @@ firestore
 
           await downloadImage()
 
-          fs.unlink("file2.png", async function(err) {
+          fs.unlink("file2.jpg", async function(err) {
             if (err) throw err
 
             let inputFile = "file.png"
