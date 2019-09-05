@@ -164,6 +164,28 @@ firestore
                 if (!BUSY) {
                   BUSY = true
 
+                  const ESCPOSImageProcessor = require("escpos-image-processor")
+
+                  const processor = new ESCPOSImageProcessor({
+                    width: 185,
+                    quality: "best"
+                  })
+
+                  processor
+                    .convert("file.png", "try.png")
+                    .then(path => {
+                      if (path) {
+                        console.log(
+                          `Processed image saved to ${path}, printing...`
+                        )
+
+                        processor.print(device, printer)
+                      } else {
+                        console.log("An Error Occurred")
+                      }
+                    })
+                    .catch(error => console.error(error))
+
                   const tux = path.join(__dirname, "file2.png")
                   escpos.Image.load(tux, function(image) {
                     device.open(async function() {
@@ -216,14 +238,14 @@ firestore
 
                       await printer.image(image, "s8")
 
-                      await printer.image(image, "d8")
-                      await printer.image(image, "s24")
-                      await printer.image(image, "d24")
-
-                      await printer.raster(image)
-                      await printer.raster(image, "dw")
-                      await printer.raster(image, "dh")
-                      await printer.raster(image, "dwdh")
+                      // await printer.image(image, "d8")
+                      // await printer.image(image, "s24")
+                      // await printer.image(image, "d24")
+                      //
+                      // await printer.raster(image)
+                      // await printer.raster(image, "dw")
+                      // await printer.raster(image, "dh")
+                      // await printer.raster(image, "dwdh")
                       await printer.close()
                     })
                   })

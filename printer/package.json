@@ -16,6 +16,7 @@
     "body-parser": "^1.19.0",
     "datauri": "^2.0.0",
     "escpos": "^2.5.2",
+    "escpos-image-processor": "^1.0.8",
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "firebase": "^6.5.0",
