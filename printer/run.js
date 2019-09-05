@@ -146,11 +146,13 @@ firestore
 
           await downloadImage()
 
+          await fs.unlink("file2.png")
+
           let inputFile = "file.png"
           let outputFile = "file2.png"
 
           sharp(inputFile)
-            .resize({ width: 100 })
+            .resize({ width: 300 })
             .toFile(outputFile)
             .then(function() {
               console.log("Success")
@@ -171,7 +173,7 @@ firestore
           if (!BUSY) {
             BUSY = true
 
-            const tux = path.join(__dirname, "file.png")
+            const tux = path.join(__dirname, "file2.png")
             escpos.Image.load(tux, function(image) {
               device.open(async function() {
                 let state = [
