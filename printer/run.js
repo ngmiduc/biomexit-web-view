@@ -165,7 +165,7 @@ firestore
                   const ESCPOSImageProcessor = require("escpos-image-processor")
 
                   const processor = new ESCPOSImageProcessor({
-                    width: 185,
+                    width: 300,
                     quality: "best"
                   })
 
