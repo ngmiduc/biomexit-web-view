@@ -5,7 +5,7 @@ const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
 
-const http = require("http")
+const http = require("https")
 const fs = require("fs")
 
 const cerd = require("./cred.json")
