@@ -146,20 +146,22 @@ firestore
 
           await downloadImage()
 
-          await fs.unlink("file2.png")
+          fs.unlink("file2.png", async function(err) {
+            if (err) throw err
 
-          let inputFile = "file.png"
-          let outputFile = "file2.png"
+            let inputFile = "file.png"
+            let outputFile = "file2.png"
 
-          sharp(inputFile)
-            .resize({ width: 300 })
-            .toFile(outputFile)
-            .then(function() {
-              console.log("Success")
-            })
-            .catch(function(err) {
-              console.log("Error occured")
-            })
+            sharp(inputFile)
+              .resize({ width: 300 })
+              .toFile(outputFile)
+              .then(function() {
+                console.log("Success : FILE RESIZED")
+              })
+              .catch(function(err) {
+                console.log("Error occured")
+              })
+          })
 
           console.log("URL is " + item.url)
           // const file = fs.createWriteStream("file.jpg")
