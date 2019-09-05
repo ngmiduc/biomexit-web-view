@@ -183,74 +183,74 @@ firestore
                       } else {
                         console.log("An Error Occurred")
                       }
+
+                      const tux = path.join(__dirname, "file2.png")
+                      escpos.Image.load(tux, function(image) {
+                        device.open(async function() {
+                          let state = [
+                            "single",
+                            "married",
+                            "divorced",
+                            "celibate",
+                            "unknown",
+                            "open",
+                            "widow",
+                            "role"
+                          ]
+                          let age = Math.floor(Math.random(1) * 30 + 20)
+                          let rating = Math.floor(Math.random(1) * 1000000)
+                          let barcode = Math.floor(
+                            Math.random() * 899999999999 + 100000000000
+                          )
+
+                          console.log("[get data] meta information: ", {
+                            age,
+                            rating
+                          })
+                          console.log("[get data] code: ", barcode)
+
+                          for (var i = 0; i < 10; i++) {
+                            console.log(
+                              "[fetching ...] " +
+                                Math.floor(
+                                  Math.random() * 899999999999 + 100000000000
+                                )
+                            )
+                          }
+
+                          await printer.font("a")
+                          await printer.align("ct")
+                          await printer.style("bu")
+                          await printer.size(1, 1)
+                          await printer.text("")
+                          await printer.text("TIME " + today)
+                          await printer.text("BIOMETRIC EXIT")
+                          await printer.text("ID " + item.id)
+                          await printer.text("ANALYSIS " + item.analysis)
+                          await printer.text(
+                            "STATE " + state[Math.floor(Math.random() * 8)]
+                          )
+                          await printer.text("RATING " + rating)
+                          await printer.text("AGE: " + age)
+                          await printer.barcode("" + barcode, "EAN13")
+
+                          await printer.image(image, "s8")
+
+                          // await printer.image(image, "d8")
+                          // await printer.image(image, "s24")
+                          // await printer.image(image, "d24")
+                          //
+                          // await printer.raster(image)
+                          // await printer.raster(image, "dw")
+                          // await printer.raster(image, "dh")
+                          // await printer.raster(image, "dwdh")
+                          await printer.close()
+
+                          BUSY = false
+                        })
+                      })
                     })
                     .catch(error => console.error(error))
-
-                  const tux = path.join(__dirname, "file2.png")
-                  escpos.Image.load(tux, function(image) {
-                    device.open(async function() {
-                      let state = [
-                        "single",
-                        "married",
-                        "divorced",
-                        "celibate",
-                        "unknown",
-                        "open",
-                        "widow",
-                        "role"
-                      ]
-                      let age = Math.floor(Math.random(1) * 30 + 20)
-                      let rating = Math.floor(Math.random(1) * 1000000)
-                      let barcode = Math.floor(
-                        Math.random() * 899999999999 + 100000000000
-                      )
-
-                      console.log("[get data] meta information: ", {
-                        age,
-                        rating
-                      })
-                      console.log("[get data] code: ", barcode)
-
-                      for (var i = 0; i < 10; i++) {
-                        console.log(
-                          "[fetching ...] " +
-                            Math.floor(
-                              Math.random() * 899999999999 + 100000000000
-                            )
-                        )
-                      }
-
-                      await printer.font("a")
-                      await printer.align("ct")
-                      await printer.style("bu")
-                      await printer.size(1, 1)
-                      await printer.text("")
-                      await printer.text("TIME " + today)
-                      await printer.text("BIOMETRIC EXIT")
-                      await printer.text("ID " + item.id)
-                      await printer.text("ANALYSIS " + item.analysis)
-                      await printer.text(
-                        "STATE " + state[Math.floor(Math.random() * 8)]
-                      )
-                      await printer.text("RATING " + rating)
-                      await printer.text("AGE: " + age)
-                      await printer.barcode("" + barcode, "EAN13")
-
-                      await printer.image(image, "s8")
-
-                      // await printer.image(image, "d8")
-                      // await printer.image(image, "s24")
-                      // await printer.image(image, "d24")
-                      //
-                      // await printer.raster(image)
-                      // await printer.raster(image, "dw")
-                      // await printer.raster(image, "dh")
-                      // await printer.raster(image, "dwdh")
-                      await printer.close()
-                    })
-                  })
-
-                  BUSY = false
                 } else {
                   console.log("[BLOCK DATA]")
                   console.log("[BLOCK DATA]")
