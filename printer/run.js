@@ -8,7 +8,7 @@ const escpos = require("escpos")
 const http = require("http")
 const fs = require("fs")
 
-const cerd = fs.readFileSync("./printer/cerd.json")
+const cerd = require("./cred.json")
 
 admin.initializeApp({
   credential: admin.credential.cert(cerd),
