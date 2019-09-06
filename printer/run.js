@@ -8,13 +8,9 @@ const axios = require("axios")
 const admin = require("firebase-admin")
 const usb = require("usb")
 const escpos = require("escpos")
-
 const sharp = require("sharp")
-
 const fs = require("fs")
-
 const cerd = require("./cred.json")
-
 const ESCPOSImageProcessor = require("escpos-image-processor")
 const processor = new ESCPOSImageProcessor({
   width: 185,
