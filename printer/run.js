@@ -14,6 +14,12 @@ const fs = require("fs")
 
 const cerd = require("./cred.json")
 
+const ESCPOSImageProcessor = require("escpos-image-processor")
+const processor = new ESCPOSImageProcessor({
+  width: 185,
+  quality: "best"
+})
+
 admin.initializeApp({
   credential: admin.credential.cert(cerd),
   storageBucket: "biomexit.appspot.com"
@@ -42,8 +48,7 @@ list.forEach(d => {
 })
 
 const device = new escpos.USB(vid, pid) //'0x04b8','0x0202'
-const options = { encoding: "GB18030" /* default */ }
-const printer = new escpos.Printer(device, options)
+const printer = new escpos.Printer(device, { encoding: "GB18030" })
 
 console.log("[printer] device : ", device)
 
@@ -76,19 +81,22 @@ firestore
 
       let today = new Date()
       let valid = new Date()
-      valid.setTime(valid.getTime() + 1 * 86400000)
-      valid = valid.toISOString()
-      valid = valid.split("T")[0]
+      valid = valid
+        .setTime(valid.getTime() + 1 * 86400000)
+        .toISOString()
+        .split("T")[0]
 
-      //add bucket get image  OPTIONAL
+      // bucket get image  OPTIONAL
       // e.g.: URL is https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2F583.jpg?alt=media&token=b662d5ec-259c-4851-8d50-4bea52dfcb1a
-      let fileName = item.url.split("iomexit.appspot.com/o/faces%2")[1]
-      fileName = fileName.split(".jpg")[0]
-      fileName = "faces/" + fileName + ".jpg"
+      let fileName = item.url
+        .split("iomexit.appspot.com/o/faces%2")[1]
+        .split(".jpg")[0]
+      fileName = `faces/${fileName}.jpg`
       const file = bucket.file(fileName)
       console.log("FILE : " + fileName)
       console.log("FILE : " + file)
-      return file
+
+      file
         .getSignedUrl({
           action: "read",
           expires: valid
@@ -106,30 +114,9 @@ firestore
             // if no error, file has been deleted successfully
             console.log("[file server] old file deleted!")
 
-            // var request = require("request")
-            // var download = function(uri, filename, callback) {
-            //   request.head(uri, function(err, res, body) {
-            //     console.log("content-type:", res.headers["content-type"])
-            //     console.log("content-length:", res.headers["content-length"])
-            //
-            //     request(uri)
-            //       .pipe(fs.createWriteStream(filename))
-            //       .on("close", callback)
-            //   })
-            // }
-
-            // await file.download({
-            //   destination: "file.jpg"
-            // })
-
-            // download(sURL, "file.jpg", function() {
-            // console.log("GOT IMAGE")
-
             async function downloadImage() {
+              const writer = fs.createWriteStream("file.png")
               const url = item.url
-              const path = "file.png"
-              const writer = fs.createWriteStream(path)
-
               const response = await axios({
                 url,
                 method: "GET",
@@ -151,39 +138,28 @@ firestore
               if (err) throw err
 
               console.log("[file server] delete old file (2)")
-              let inputFile = "file.png"
-              let outputFile = "file2.png"
 
-              sharp(inputFile)
+              sharp("file.png")
                 .resize({ width: 500, height: 300 })
                 .grayscale()
-                .toFile(outputFile)
+                .toFile("file2.png")
                 .then(function() {
                   console.log("[file server] save new file (2)")
                   console.log("[file server] FILE RESIZED")
-
                   console.log("[file server] URL is " + item.url)
-
                   console.log("[get data] timedate: ", today)
-
-                  const ESCPOSImageProcessor = require("escpos-image-processor")
-
-                  const processor = new ESCPOSImageProcessor({
-                    width: 185,
-                    quality: "best"
-                  })
 
                   processor
                     .convert("file2.png", "file2.png")
                     .then(path => {
                       if (path) {
                         console.log(
-                          `[file server] Processed image saved to ${path}, printing...`
+                          `[file server processor] Processed image saved to ${path}, printing...`
                         )
 
                         // processor.print(device, printer)
                       } else {
-                        console.log("An Error Occurred")
+                        console.log("[file server processor] An Error Occurred")
                       }
 
                       const tux = "file2.png"
@@ -261,6 +237,7 @@ firestore
           })
         })
     } else {
+      console.log("[SERVER OVERLOAD")
       console.log("[BLOCK DATA]")
       console.log("[BLOCK DATA]")
       console.log("[BLOCK DATA]")
