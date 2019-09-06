@@ -78,10 +78,8 @@ firestore
 
       let today = new Date()
       let valid = new Date()
-      valid = valid
-        .setTime(valid.getTime() + 1 * 60000)
-        .toISOString()
-        .split("T")[0]
+      valid.setTime(valid.getTime() + 1 * 60000)
+      valid = valid.toISOString().split("T")[0]
 
       // bucket get image  OPTIONAL
       // e.g.: URL is https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2F583.jpg?alt=media&token=b662d5ec-259c-4851-8d50-4bea52dfcb1a
