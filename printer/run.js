@@ -79,7 +79,7 @@ firestore
       let today = new Date()
       let valid = new Date()
       valid = valid
-        .setTime(valid.getTime() + 1 * 86400000)
+        .setTime(valid.getTime() + 1 * 60000)
         .toISOString()
         .split("T")[0]
 
