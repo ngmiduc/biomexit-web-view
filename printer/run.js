@@ -79,7 +79,6 @@ firestore
       let today = new Date()
       let valid = new Date()
       valid.setTime(valid.getTime() + 1 * 60000)
-      valid = valid.toISOString().split("T")[0]
 
       // bucket get image  OPTIONAL
       // e.g.: URL is https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2F583.jpg?alt=media&token=b662d5ec-259c-4851-8d50-4bea52dfcb1a
@@ -100,6 +99,7 @@ firestore
           // signedUrls[0] contains the file's public URL
 
           const sURL = signedUrls[0]
+          valid = valid.toISOString().split("T")[0]
 
           console.log("[data fetching] get signed URL : " + sURL)
           console.log("[data fetching] valid until : " + valid)
