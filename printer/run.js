@@ -162,8 +162,7 @@ firestore
                         console.log("[file server processor] An Error Occurred")
                       }
 
-                      const tux = "file2.png"
-                      escpos.Image.load(tux, function(image) {
+                      escpos.Image.load("file2.png", function(image) {
                         device.open(async function() {
                           console.log("[printer] open printer ...")
 
