@@ -52,6 +52,7 @@ const printer = new escpos.Printer(device, { encoding: "GB18030" })
 console.log("[printer] device : ", device)
 
 let BUSY = false
+let OPENED = false
 
 firestore
   .collection("faces")
@@ -156,6 +157,12 @@ firestore
                       }
 
                       escpos.Image.load("ESCPOS.png", function(image) {
+                        if (OPENED) {
+                          console.log("[printer] already OPENED ...")
+                          return
+                        }
+
+                        OPENED = true
                         device.open(async function() {
                           console.log("[printer] open printer ...")
 
@@ -218,7 +225,7 @@ firestore
                           // await printer.raster(image, "dh")
                           // await printer.raster(image, "dwdh")
                           await printer.close()
-
+                          OPENED = false
                           BUSY = false
                         })
                       })
