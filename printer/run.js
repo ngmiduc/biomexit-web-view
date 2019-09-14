@@ -134,8 +134,8 @@ firestore
 
               console.log("[file server] delete old file (2)")
 
+              sharp.cache(false)
               sharp("file.png")
-                .cache(false)
                 .resize({ width: 500, height: 300 })
                 .grayscale()
                 .toFile("file2.png")
