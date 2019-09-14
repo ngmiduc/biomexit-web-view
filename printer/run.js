@@ -145,7 +145,7 @@ firestore
                   console.log("[get data] timedate: ", today)
 
                   processor
-                    .convert("file2.png", "file3.png")
+                    .convert("file2.png", "file2.png")
                     .then(path => {
                       if (path) {
                         console.log(
