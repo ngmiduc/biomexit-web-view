@@ -17,6 +17,8 @@ const processor = new ESCPOSImageProcessor({
   quality: "best"
 })
 
+sharp.cache(false)
+
 admin.initializeApp({
   credential: admin.credential.cert(cerd),
   storageBucket: "biomexit.appspot.com"
@@ -80,8 +82,6 @@ firestore
       let valid = new Date()
       valid.setTime(valid.getTime() + 1 * 60000)
 
-      // bucket get image  OPTIONAL
-      // e.g.: URL is https://firebasestorage.googleapis.com/v0/b/biomexit.appspot.com/o/faces%2F583.jpg?alt=media&token=b662d5ec-259c-4851-8d50-4bea52dfcb1a
       let fileName = item.url
         .split("iomexit.appspot.com/o/faces%2")[1]
         .split(".jpg")[0]
@@ -96,8 +96,6 @@ firestore
           expires: valid
         })
         .then(signedUrls => {
-          // signedUrls[0] contains the file's public URL
-
           const sURL = signedUrls[0]
           valid = valid.toISOString().split("T")[0]
 
@@ -134,7 +132,6 @@ firestore
 
               console.log("[file server] delete old file (2)")
 
-              sharp.cache(false)
               sharp("source.png")
                 .resize({ width: 500, height: 300 })
                 .grayscale()
