@@ -138,7 +138,6 @@ firestore
                 .resize({ width: 500, height: 300 })
                 .grayscale()
                 .toFile("file2.png")
-                .toFile("file3.png")
                 .then(function() {
                   console.log("[file server] save new file (2)")
                   console.log("[file server] FILE RESIZED")
@@ -146,7 +145,7 @@ firestore
                   console.log("[get data] timedate: ", today)
 
                   processor
-                    .convert("file2.png", "file2.png")
+                    .convert("file2.png", "file3.png")
                     .then(path => {
                       if (path) {
                         console.log(
