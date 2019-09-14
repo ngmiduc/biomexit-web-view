@@ -104,13 +104,13 @@ firestore
           console.log("[data fetching] get signed URL : " + sURL)
           console.log("[data fetching] valid until : " + valid)
 
-          fs.unlink("file.png", async function(err) {
+          fs.unlink("source.png", async function(err) {
             if (err) throw err
             // if no error, file has been deleted successfully
             console.log("[file server] old file deleted!")
 
             async function downloadImage() {
-              const writer = fs.createWriteStream("file.png")
+              const writer = fs.createWriteStream("source.png")
               const url = item.url
               const response = await axios({
                 url,
@@ -129,16 +129,16 @@ firestore
             await downloadImage()
             console.log("[file server] set new file")
 
-            fs.unlink("file2.png", async function(err) {
+            fs.unlink("processed.png", async function(err) {
               if (err) throw err
 
               console.log("[file server] delete old file (2)")
 
               sharp.cache(false)
-              sharp("file.png")
+              sharp("source.png")
                 .resize({ width: 500, height: 300 })
                 .grayscale()
-                .toFile("file2.png")
+                .toFile("processed.png")
                 .then(function() {
                   console.log("[file server] save new file (2)")
                   console.log("[file server] FILE RESIZED")
@@ -146,7 +146,7 @@ firestore
                   console.log("[get data] timedate: ", today)
 
                   processor
-                    .convert("file2.png", "file3.png")
+                    .convert("processed.png", "ESCPOS.png")
                     .then(path => {
                       if (path) {
                         console.log(
@@ -158,7 +158,7 @@ firestore
                         console.log("[file server processor] An Error Occurred")
                       }
 
-                      escpos.Image.load("file2.png", function(image) {
+                      escpos.Image.load("ESCPOS.png", function(image) {
                         device.open(async function() {
                           console.log("[printer] open printer ...")
 
