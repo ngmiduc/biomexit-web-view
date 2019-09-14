@@ -134,7 +134,9 @@ firestore
 
               console.log("[file server] delete old file (2)")
 
-              sharp("file.png")
+              const image = sharp("file.png")
+
+              image
                 .resize({ width: 500, height: 300 })
                 .grayscale()
                 .toFile("file2.png")
@@ -145,7 +147,7 @@ firestore
                   console.log("[get data] timedate: ", today)
 
                   processor
-                    .convert("file2.png", "file2.png")
+                    .convert("file2.png", "file3.png")
                     .then(path => {
                       if (path) {
                         console.log(
