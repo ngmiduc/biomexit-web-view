@@ -138,6 +138,7 @@ firestore
                 .resize({ width: 500, height: 300 })
                 .grayscale()
                 .toFile("file2.png")
+                .toFile("file3.png")
                 .then(function() {
                   console.log("[file server] save new file (2)")
                   console.log("[file server] FILE RESIZED")
